@@ -23,4 +23,5 @@ public class JavaJokes {
         String joke = jokes.get(index);
         return joke;
     }
+
 }

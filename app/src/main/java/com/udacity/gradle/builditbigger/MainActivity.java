@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.llamasontheloosefarm.javajokeslibrary.JavaJokes;
+import com.llamasontheloosefarm.androidjokelibrary.JokeActivity;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -48,6 +49,8 @@ public class MainActivity extends AppCompatActivity {
 
     public void tellJoke(View view) {
         Toast.makeText(this, jokes.getJoke(), Toast.LENGTH_SHORT).show();
+
+        
     }
 
 
