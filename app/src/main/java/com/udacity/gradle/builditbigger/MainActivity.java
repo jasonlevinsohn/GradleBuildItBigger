@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.VisibleForTesting;
 import android.support.v4.util.Pair;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -74,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    class EndpointsAsyncTask extends AsyncTask<Pair<Context, String>, Void, String> {
+    public class EndpointsAsyncTask extends AsyncTask<Pair<Context, String>, Void, String> {
 //        private static MyApi myApiService = null;
         private MyApi myApiService = null;
         private Context context;
@@ -108,7 +109,13 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(String s) {
 //            Toast.makeText(context, s, Toast.LENGTH_LONG).show();
             launchAndroidJokeLibraryActivity(s);
+            handleGetJokeResponse(s);
         }
+    }
+
+    @VisibleForTesting
+    public void handleGetJokeResponse(String s) {
+
     }
 
     private void launchAndroidJokeLibraryActivity(String joke) {
