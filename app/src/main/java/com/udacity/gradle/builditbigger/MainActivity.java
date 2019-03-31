@@ -23,9 +23,10 @@ import com.udacity.gradle.builditbigger.backend.myApi.*;
 import java.io.IOException;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements OnTaskCompleted {
 
     JavaJokes jokes;
+    OnTaskCompleted mListener;  // TODO: how do I instantiate this?
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,63 +61,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void tellJoke(View view) {
-//        Toast.makeText(this, jokes.getJoke(), Toast.LENGTH_SHORT).show();
-
-//        Context context = MainActivity.this;
-//        Class dest = JokeActivity.class;
-//        Intent jokeIntent = new Intent(context, dest);
-//        String oneJoke = jokes.getJoke();
-//        jokeIntent.putExtra("jokeString", oneJoke);
-//
-//        startActivity(jokeIntent);
 
         // Playing with backend
-        new EndpointsAsyncTask().execute(new Pair<Context, String>(this, "Ja-Lev"));
+        new EndpointsAsyncTask(mListener).execute();
 
     }
 
-    public class EndpointsAsyncTask extends AsyncTask<Pair<Context, String>, Void, String> {
-//        private static MyApi myApiService = null;
-        private MyApi myApiService = null;
-        private Context context;
-
-        @Override
-        protected String doInBackground(Pair<Context, String>... params) {
-            if (myApiService == null) {
-                MyApi.Builder builder = new MyApi.Builder(AndroidHttp.newCompatibleTransport(),
-                        new AndroidJsonFactory(), null)
-                        .setRootUrl("http://10.0.2.2:8080/_ah/api/")
-                        .setGoogleClientRequestInitializer(new GoogleClientRequestInitializer() {
-                            @Override
-                            public void initialize(AbstractGoogleClientRequest<?> request) throws IOException {
-                                request.setDisableGZipContent(true);
-                            }
-                        });
-                myApiService = builder.build();
-            }
-
-            context = params[0].first;
-            String name = params[0].second;
-
-            try {
-                return myApiService.getMyJoke().execute().getData();
-            } catch (IOException io) {
-                return io.getMessage();
-            }
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-//            Toast.makeText(context, s, Toast.LENGTH_LONG).show();
-            launchAndroidJokeLibraryActivity(s);
-            handleGetJokeResponse(s);
-        }
+    @Override
+    public void onTaskCompeted(String joke) {
+        launchAndroidJokeLibraryActivity(joke);
     }
 
-    @VisibleForTesting
-    public void handleGetJokeResponse(String s) {
-
-    }
 
     private void launchAndroidJokeLibraryActivity(String joke) {
 
