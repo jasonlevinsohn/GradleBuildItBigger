@@ -14,9 +14,9 @@ import java.io.IOException;
 
 public class EndpointsAsyncTask extends AsyncTask<Void, Void, String> {
     private MyApi myApiService = null;
-    private OnTaskCompleted listener;
+    private OnTaskCompleted<String> listener;
 
-    public EndpointsAsyncTask(OnTaskCompleted listener) {
+    public EndpointsAsyncTask(OnTaskCompleted<String> listener) {
         this.listener = listener;
     }
 
@@ -45,8 +45,11 @@ public class EndpointsAsyncTask extends AsyncTask<Void, Void, String> {
 
     @Override
     protected void onPostExecute(String s) {
+        super.onPostExecute(s);
 //            Toast.makeText(context, s, Toast.LENGTH_LONG).show();
 //        launchAndroidJokeLibraryActivity(s);
-        listener.onTaskCompeted(s);
+        if (s != null && listener != null) {
+            listener.onTaskCompeted(s);
+        }
     }
 }

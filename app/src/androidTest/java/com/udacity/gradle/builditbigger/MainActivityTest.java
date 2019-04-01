@@ -35,87 +35,20 @@ public class MainActivityTest  {
 
     private static final String TAG = MainActivityTest.class.getSimpleName();
 
-    @Rule
-    public ActivityTestRule<MainActivity> mActivityRule = new ActivityTestRule<>(MainActivity.class);
-
+    private OnTaskCompleted<String> testListener;
 
     @Test
     public void TestGetJokeAsyncCall() throws Throwable {
 
-        Activity testActivity = mActivityRule.getActivity();
-
-        final CountDownLatch signal = new CountDownLatch(1);
-
-        final AsyncTask<Pair<Context, String>, Void, String> myTestTask = new AsyncTask<Pair<Context, String>, Void, String>() {
-            private MyApi myApiServiceTest = null;
-            private Context contextTest;
-
-
+        testListener = new OnTaskCompleted<String>() {
             @Override
-            protected String doInBackground(Pair<Context, String>... pairs) {
-                if (myApiServiceTest == null) {
-                    MyApi.Builder builder = new MyApi.Builder(AndroidHttp.newCompatibleTransport(),
-                            new AndroidJsonFactory(), null)
-                            .setRootUrl("http://10.0.2.2:8080/_ah/api/")
-                            .setGoogleClientRequestInitializer(new GoogleClientRequestInitializer() {
-                                @Override
-                                public void initialize(AbstractGoogleClientRequest<?> request) throws IOException {
-                                    request.setDisableGZipContent(true);
-                                }
-                            });
-                    myApiServiceTest = builder.build();
-                }
-
-                contextTest = pairs[0].first;
-                String name = pairs[0].second;
-
-                try {
-                    return myApiServiceTest.getMyJoke().execute().getData();
-                } catch (IOException io) {
-                    return io.getMessage();
-                }
+            public void onTaskCompeted(String joke) {
+                Assert.assertNotEquals("", joke);
             }
-
-            @Override
-            protected void onPostExecute(String s) {
-                super.onPostExecute(s);
-
-                signal.countDown();
-            }
-
         };
 
-        testActivity.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                myTestTask.execute();
-            }
-        });
+        new EndpointsAsyncTask(testListener).execute();
 
-        signal.await(30, TimeUnit.SECONDS);
-
-
-        Assert.assertNotEquals("string", "notstring");
-
-//        final Object syncObject = new Object();
-//
-//        GetJokeTestMainActivity mainTestActivity = mActivityRule.getActivity();
-//        mainTestActivity.setGetJokeTestCallback(new GetJokeTestMainActivity.GetJokeTestCallback() {
-//            @Override
-//            public void onHandleResponseCalled(String joke) {
-//                Log.d(TAG, "TESTING Getting Joke: " + joke);
-//                Assert.assertNotEquals("somestring", joke);
-//                synchronized (syncObject) {
-//                    syncObject.notify();
-//                }
-//            }
-//        });
-//        onView(withId(R.id.instructions_text_view)).perform(click());
-//
-//
-//        synchronized (syncObject) {
-//            syncObject.wait();
-//        }
     }
 
 }

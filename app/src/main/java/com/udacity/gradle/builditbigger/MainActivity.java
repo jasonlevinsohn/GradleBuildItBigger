@@ -23,16 +23,17 @@ import com.udacity.gradle.builditbigger.backend.myApi.*;
 import java.io.IOException;
 
 
-public class MainActivity extends AppCompatActivity implements OnTaskCompleted {
+public class MainActivity extends AppCompatActivity {
 
     JavaJokes jokes;
-    OnTaskCompleted mListener;  // TODO: how do I instantiate this?
+    OnTaskCompleted<String> mListener;  // TODO: how do I instantiate this?
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         jokes = new JavaJokes();
+
 
         setContentView(R.layout.activity_main);
     }
@@ -62,14 +63,16 @@ public class MainActivity extends AppCompatActivity implements OnTaskCompleted {
 
     public void tellJoke(View view) {
 
+        mListener = new OnTaskCompleted<String>() {
+            @Override
+            public void onTaskCompeted(String joke) {
+                launchAndroidJokeLibraryActivity(joke);
+            }
+        };
+
         // Playing with backend
         new EndpointsAsyncTask(mListener).execute();
 
-    }
-
-    @Override
-    public void onTaskCompeted(String joke) {
-        launchAndroidJokeLibraryActivity(joke);
     }
 
 
