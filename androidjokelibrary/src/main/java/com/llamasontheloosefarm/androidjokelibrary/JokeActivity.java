@@ -20,8 +20,8 @@ public class JokeActivity extends AppCompatActivity {
         String joke;
 
         // Set the joke text retrieved from the main activity
-        if (fromIntent.hasExtra("jokeString")) {
-            joke = fromIntent.getStringExtra("jokeString");
+        if (fromIntent.hasExtra(getString(R.string.joke_string_intent))) {
+            joke = fromIntent.getStringExtra(getString(R.string.joke_string_intent));
             tvJokeText.setText(joke);
 
 

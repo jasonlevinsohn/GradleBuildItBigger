@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
         Class dest = JokeActivity.class;
         Intent jokeIntent = new Intent(context, dest);
         String oneJoke = jokes.getJoke();
-        jokeIntent.putExtra("jokeString", oneJoke);
+        jokeIntent.putExtra(getString(R.string.joke_string_intent), oneJoke);
 
         startActivity(jokeIntent);
     }
